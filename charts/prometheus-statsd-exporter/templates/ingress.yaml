@@ -1,5 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "prometheus-statsd-exporter.fullname" . -}}
+{{- $pathType := .Values.ingress.pathType | default "ImplementationSpecific" -}}
 {{- $svcPort := .Values.service.port -}}
 {{- $kubeTargetVersion := default .Capabilities.KubeVersion.GitVersion .Values.kubeTargetVersionOverride }}
 {{- if semverCompare ">=1.19.0-0" $kubeTargetVersion }}
@@ -35,7 +36,7 @@ spec:
           {{- range .paths }}
           - path: {{ . }}
             {{- if semverCompare ">=1.19.0-0" $kubeTargetVersion }}
-            pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+            pathType: {{ $pathType }}
             {{- end }}
             backend:
               {{- if semverCompare ">=1.19.0-0" $kubeTargetVersion }}
